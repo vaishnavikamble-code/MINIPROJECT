@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Portal - Content Display</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700,900');
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+        :root {
+            --primary-gradient: linear-gradient(to right, #2563eb, #9333ea);
+            --secondary-gradient: linear-gradient(to right, #9333ea, #2563eb);
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-blue: #1e40af;
+            --light-gray: #f3f4f6;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        body {
+            background-color: var(--light-gray);
+            min-height: 100vh;
+            padding-top: 80px;
+            padding-bottom: 30px;
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px;
+            background: var(--primary-gradient);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .navbar .logo {
+            font-size: 30px;
+            font-weight: 700;
+            color: white;
+            padding-left: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .navbar ul {
+            display: flex;
+            list-style: none;
+            padding-right: 30px;
+        }
+        .navbar ul li {
+            margin-left: 20px;
+        }
+        .navbar ul li a {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 8px;
+            transition: 0.3s;
+            border: 2px solid white;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .navbar ul li a:hover {
+            background: white;
+            color: #2563eb;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        .section-header {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+            text-align: center;
+        }
+        .section-header h1 {
+            color: var(--dark-blue);
+            margin-bottom: 10px;
+            font-size: 36px;
+        }
+        .section-header p {
+            color: #666;
+            font-size: 18px;
+        }
+        .content-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .content-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .section-tabs {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        .section-tab {
+            background: var(--light-gray);
+            color: #4b5563;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: 0.3s;
+        }
+        .section-tab.active {
+            background: var(--primary-gradient);
+            color: white;
+        }
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: var(--light-gray);
+            border-radius: 8px;
+            padding: 8px 15px;
+            max-width: 300px;
+            width: 100%;
+        }
+        .search-bar input {
+            background: transparent;
+            border: none;
+            padding: 8px;
+            font-size: 16px;
+            flex: 1;
+        }
+        .search-bar input:focus {
+            outline: none;
+        }
+        .search-bar i {
+            color: #6b7280;
+        }
+        .content-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .content-table th {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .content-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+        }
+        .content-table tr:last-child td {
+            border-bottom: none;
+        }
+        .content-table tr:hover td {
+            background-color: #f9fafb;
+        }
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+        }
+        .badge-cse {
+            background-color: #2563eb;
+        }
+        .badge-ece {
+            background-color: #9333ea;
+        }
+        .badge-eee {
+            background-color: #f59e0b;
+        }
+        .badge-mech {
+            background-color: #10b981;
+        }
+        .badge-civil {
+            background-color: #ef4444;
+        }
+        .pdf-link {
+            color: #ef4444;
+            font-size: 24px;
+            display: inline-block;
+            transition: 0.3s;
+        }
+        .pdf-link:hover {
+            transform: scale(1.2);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #6b7280;
+        }
+        .empty-state i {
+            font-size: 60px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        .empty-state h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .content-details {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            background: #f9fafb;
+            display: none;
+        }
+        .content-details h3 {
+            color: var(--dark-blue);
+            margin-bottom: 10px;
+        }
+        .content-details p {
+            color: #4b5563;
+            line-height: 1.6;
+        }
+        .detail-row {
+            margin-bottom: 15px;
+        }
+        .detail-label {
+            font-weight: 600;
+            color: #4b5563;
+        }
+        .view-details-btn {
+            background: transparent;
+            border: none;
+            color: #2563eb;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px;
+            transition: 0.3s;
+        }
+        .view-details-btn:hover {
+            text-decoration: underline;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .pagination button {
+            padding: 8px 15px;
+            border: 1px solid #e5e7eb;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .pagination button:hover, .pagination button.active {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+        }
+        .footer {
+            text-align: center;
+            padding: 30px 0;
+            color: #6b7280;
+            margin-top: 50px;
+        }
+        @media (max-width: 768px) {
+            .content-controls {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            .search-bar {
+                max-width: 100%;
+            }
+            .content-table th, .content-table td {
+                padding: 10px;
+            }
+            .navbar .logo {
+                font-size: 24px;
+                padding-left: 15px;
+            }
+            .navbar ul {
+                padding-right: 15px;
+            }
+            .navbar ul li a {
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="#" class="logo">
+            <i class="fas fa-graduation-cap"></i>
+            CAMPUS PORTAL
+        </a>
+        <ul>
+            <li><a href="HomePageStudent.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="notifications-page.html"><i class="fas fa-user"></i>Notifications</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <div class="section-header">
+            <h1 id="sectionTitle">Campus Updates</h1>
+            <p>Stay informed with the latest information from our campus</p>
+        </div>
+        
+        <div class="content-card">
+            <div class="content-controls">
+                <div class="section-tabs" id="sectionTabs">
+                    <button class="section-tab" data-section="scholarship">Scholarships</button>
+                    <button class="section-tab" data-section="news">News</button>
+                    <button class="section-tab" data-section="announcement">Announcements</button>
+                    <button class="section-tab" data-section="events">Events</button>
+                    <button class="section-tab" data-section="academics">Academics</button>
+                </div>
+                
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search...">
+                </div>
+            </div>
+            
+            <div class="content-table-container">
+                <table class="content-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Department</th>
+                            <th>Date</th>
+                            <th>PDF</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody id="contentTable">
+                        <!-- Dynamic rows will be inserted here -->
+                    </tbody>
+                </table>
+                
+                <div id="emptyState" class="empty-state" style="display: none;">
+                    <i class="fas fa-folder-open"></i>
+                    <h3>No content available</h3>
+                    <p>There are no items to display in this section</p>
+                </div>
+                
+                <div class="pagination" id="pagination">
+                    <!-- Pagination buttons will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>&copy; 2025 Campus Portal. All rights reserved.</p>
+    </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Constants and variables
+            const ITEMS_PER_PAGE = 5;
+            let currentSection = new URLSearchParams(window.location.search).get("section") || "scholarship";
+            let currentPage = 1;
+            let filteredData = [];
+            
+            // Initialize page
+            initializePage();
+            
+            // Initialize the page
+            function initializePage() {
+                // Set active tab
+                setActiveTab();
+                
+                // Load content data
+                loadContent();
+                
+                // Add event listeners
+                setupEventListeners();
+            }
+            
+            // Set the active tab based on current section
+            function setActiveTab() {
+                const tabs = document.querySelectorAll('.section-tab');
+                tabs.forEach(tab => {
+                    tab.classList.remove('active');
+                    if (tab.dataset.section === currentSection) {
+                        tab.classList.add('active');
+                    }
+                });
+                
+                // Update section title
+                updateSectionTitle();
+            }
+            
+            // Update the section title
+            function updateSectionTitle() {
+                const sectionTitleMap = {
+                    "scholarship": "Scholarships",
+                    "news": "Latest News",
+                    "announcement": "Announcements",
+                    "events": "Upcoming Events",
+                    "academics": "Academic Resources"
+                };
+                
+                document.getElementById('sectionTitle').textContent = sectionTitleMap[currentSection] || "Campus Updates";
+            }
+            
+            // Load content data from localStorage
+            function loadContent(searchTerm = '') {
+                const storageKey = "content_" + currentSection;
+                let storedData = JSON.parse(localStorage.getItem(storageKey)) || [];
+                
+                // Sort data by date (newest first)
+                storedData.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                // Filter data if search term is provided
+                if (searchTerm) {
+                    const term = searchTerm.toLowerCase();
+                    filteredData = storedData.filter(item => 
+                        (item.title && item.title.toLowerCase().includes(term)) || 
+                        (item.name && item.name.toLowerCase().includes(term)) || 
+                        (item.department && item.department.toLowerCase().includes(term))
+                    );
+                } else {
+                    filteredData = storedData;
+                }
+                
+                // Display content
+                displayContent();
+                
+                // Setup pagination
+                setupPagination();
+            }
+            
+            // Display content in the table
+            function displayContent() {
+                const contentTable = document.getElementById("contentTable");
+                const emptyState = document.getElementById("emptyState");
+                
+                // Clear the table
+                contentTable.innerHTML = "";
+                
+                // Handle empty data
+                if (filteredData.length === 0) {
+                    emptyState.style.display = "block";
+                    return;
+                } else {
+                    emptyState.style.display = "none";
+                }
+                
+                // Calculate pagination
+                const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+                const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, filteredData.length);
+                const paginatedData = filteredData.slice(startIndex, endIndex);
+                
+                // Create table rows
+                paginatedData.forEach((item, index) => {
+                    const row = document.createElement("tr");
+                    const departmentName = getDepartmentName(item.department);
+                    const deptClass = `badge-${item.department}`;
+                    
+                    row.innerHTML = `
+                        <td>${item.title || item.name || "Untitled"}</td>
+                        <td><span class="badge ${deptClass}">${departmentName}</span></td>
+                        <td>${formatDate(item.date)}</td>
+                        <td>
+                            ${item.pdfLink ? 
+                              `<a href="${item.pdfLink}" target="_blank" class="pdf-link" title="Download PDF">
+                                  <i class="fas fa-file-pdf"></i>
+                              </a>` : 
+                              "<span style='color: #9ca3af;'>No PDF</span>"}
+                        </td>
+                        <td>
+                            <button class="view-details-btn" data-id="${item.id || index}">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                        </td>
+                    `;
+                    
+                    // Add details section that will be shown/hidden
+                    const detailsRow = document.createElement("tr");
+                    detailsRow.innerHTML = `
+                        <td colspan="5">
+                            <div class="content-details" id="details-${item.id || index}">
+                                <h3>${item.title || item.name || "Untitled"}</h3>
+                                <div class="detail-row">
+                                    <span class="detail-label">Department:</span> ${departmentName}
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Date:</span> ${formatDate(item.date)}
+                                </div>
+                                ${item.expiryDate ? `
+                                <div class="detail-row">
+                                    <span class="detail-label">Expiry Date:</span> ${formatDate(item.expiryDate)}
+                                </div>` : ''}
+                                <div class="detail-row">
+                                    <p>${item.name || ""}</p>
+                                </div>
+                                ${item.pdfLink ? `
+                                <div class="detail-row">
+                                    <a href="${item.pdfLink}" target="_blank" style="color: #2563eb; display: flex; align-items: center; gap: 5px;">
+                                        <i class="fas fa-download"></i> Download PDF
+                                    </a>
+                                </div>` : ''}
+                            </div>
+                        </td>
+                    `;
+                    
+                    contentTable.appendChild(row);
+                    contentTable.appendChild(detailsRow);
+                });
+            }
+            
+            // Setup pagination
+            function setupPagination() {
+                const paginationElement = document.getElementById("pagination");
+                paginationElement.innerHTML = "";
+                
+                const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE);
+                
+                // Don't show pagination if only one page
+                if (totalPages <= 1) {
+                    return;
+                }
+                
+                // Previous button
+                const prevButton = document.createElement("button");
+                prevButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                prevButton.disabled = currentPage === 1;
+                prevButton.addEventListener("click", () => {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        displayContent();
+                        setupPagination();
+                    }
+                });
+                paginationElement.appendChild(prevButton);
+                
+                // Page buttons
+                let startPage = Math.max(1, currentPage - 2);
+                let endPage = Math.min(totalPages, startPage + 4);
+                
+                // Adjust start page if end page is maxed out
+                if (endPage === totalPages) {
+                    startPage = Math.max(1, endPage - 4);
+                }
+                
+                for (let i = startPage; i <= endPage; i++) {
+                    const pageButton = document.createElement("button");
+                    pageButton.textContent = i;
+                    
+                    if (i === currentPage) {
+                        pageButton.classList.add("active");
+                    }
+                    
+                    pageButton.addEventListener("click", () => {
+                        currentPage = i;
+                        displayContent();
+                        setupPagination();
+                    });
+                    
+                    paginationElement.appendChild(pageButton);
+                }
+                
+                // Next button
+                const nextButton = document.createElement("button");
+                nextButton.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                nextButton.disabled = currentPage === totalPages;
+                nextButton.addEventListener("click", () => {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        displayContent();
+                        setupPagination();
+                    }
+                });
+                paginationElement.appendChild(nextButton);
+            }
+            
+            // Setup event listeners
+            function setupEventListeners() {
+                // Tab navigation
+                const tabs = document.querySelectorAll('.section-tab');
+                tabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        currentSection = tab.dataset.section;
+                        currentPage = 1;
+                        
+                        // Update URL without page reload
+                        history.pushState({}, '', `?section=${currentSection}`);
+                        
+                        // Reset search
+                        document.getElementById('searchInput').value = '';
+                        
+                        // Update content
+                        setActiveTab();
+                        loadContent();
+                    });
+                });
+                
+                // Search functionality
+                const searchInput = document.getElementById('searchInput');
+                searchInput.addEventListener('input', function() {
+                    currentPage = 1;
+                    loadContent(this.value);
+                });
+                
+                // View details buttons
+                document.addEventListener('click', function(event) {
+                    if (event.target.classList.contains('view-details-btn') || 
+                        event.target.parentElement.classList.contains('view-details-btn')) {
+                        
+                        const button = event.target.classList.contains('view-details-btn') ? 
+                                       event.target : event.target.parentElement;
+                        
+                        const itemId = button.dataset.id;
+                        const detailsElement = document.getElementById(`details-${itemId}`);
+                        
+                        // Toggle visibility
+                        if (detailsElement.style.display === 'block') {
+                            detailsElement.style.display = 'none';
+                            button.innerHTML = '<i class="fas fa-eye"></i> View';
+                        } else {
+                            // Hide all other details
+                            document.querySelectorAll('.content-details').forEach(el => {
+                                el.style.display = 'none';
+                            });
+                            
+                            // Show this detail
+                            detailsElement.style.display = 'block';
+                            button.innerHTML = '<i class="fas fa-eye-slash"></i> Hide';
+                        }
+                    }
+                });
+            }
+            
+            // Helper function to format date
+            function formatDate(dateString) {
+                if (!dateString) return "N/A";
+                
+                const date = new Date(dateString);
+                return date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            }
+            
+            // Helper function to get department name from code
+            function getDepartmentName(code) {
+                const departments = {
+                    "cse": "Computer Science",
+                    "ece": "Electronics & Communication",
+                    "eee": "Electrical Engineering",
+                    "mech": "Mechanical Engineering",
+                    "civil": "Civil Engineering"
+                };
+                
+                return departments[code] || code;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Profile - College Management System</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #9333ea;
+            --light-bg: #f3f4f6;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --danger: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --white: #ffffff;
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--text-dark);
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 1rem 2rem;
+            color: var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logo i {
+            margin-right: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-link i {
+            margin-right: 6px;
+        }
+
+        .nav-link:hover {
+            opacity: 0.85;
+        }
+
+        .profile-dropdown {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .profile-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-weight: 600;
+            border: 2px solid var(--white);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            min-width: 200px;
+            z-index: 100;
+            display: none;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--light-bg);
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background-color: var(--light-bg);
+            margin: 8px 0;
+        }
+
+        .logout-item {
+            color: var(--danger);
+        }
+
+        .logout-item i {
+            color: var(--danger);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .profile-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .profile-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .profile-card {
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            height: fit-content;
+        }
+
+        .profile-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .avatar-edit {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background-color: var(--white);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .avatar-edit:hover {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+
+        .profile-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .profile-id {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .profile-department {
+            background-color: var(--light-bg);
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .quick-info {
+            border-top: 1px solid var(--light-bg);
+            padding-top: 1rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .info-item i {
+            color: var(--primary);
+            margin-right: 10px;
+            font-size: 1.2rem;
+            width: 24px;
+        }
+
+        .info-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .info-value {
+            font-weight: 500;
+        }
+
+        .admission-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .cap {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .non-cap {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .profile-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--light-bg);
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-tab {
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            position: relative;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+
+        .profile-tab.active {
+            color: var(--primary);
+        }
+
+        .profile-tab.active::after {
+            content: "";
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 576px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .form-control {
+            width: 85%;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            background-color: var(--white);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-control:disabled {
+            background-color: #f9fafb;
+            cursor: not-allowed;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            background-color: var(--white);
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236b7280'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1.5em;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            border: none;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .scholarship-info {
+            background-color: rgba(255, 237, 213, 0.5);
+            border-left: 4px solid var(--warning);
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .scholarship-info i {
+            color: var(--warning);
+            margin-right: 8px;
+        }
+        
+        .scholarship-eligible {
+            background-color: rgba(209, 250, 229, 0.5);
+            border-left: 4px solid var(--success);
+        }
+        
+        .scholarship-eligible i {
+            color: var(--success);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--success);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .toast.show {
+            opacity: 1;
+        }
+        
+        .toast.error {
+            background-color: var(--danger);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-university"></i> EduManage
+        </div>
+        <div class="nav-links">
+            <a href="HomePageStudent.html" class="nav-link">
+                <i class="fas fa-home"></i> Home
+            </a>
+
+
+
+            <div class="profile-dropdown" id="profileDropdown">
+                <div class="profile-image" id="profileImage">
+                    JS
+                </div>
+                <div class="dropdown-menu" id="dropdownMenu">
+
+                    <a href="notifications-page.html" class="dropdown-item">
+                        <i class="fas fa-bell"></i> Notifications
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="index.html" class="dropdown-item logout-item" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1 class="page-title">My Profile</h1>
+
+        <div class="profile-container">
+            <!-- Profile Card -->
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <span id="avatarInitials">JS</span>
+                        <div class="avatar-edit">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                    </div>
+                    <h2 class="profile-name" id="studentName">John Smith</h2>
+                    <div class="profile-id" id="studentId">EN22121001</div>
+                    <div class="profile-department" id="studentDepartment">Computer Science</div>
+                </div>
+                <div class="quick-info">
+                    <div class="info-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <div class="info-label">Email</div>
+                            <div class="info-value" id="studentEmail">john.smith@example.com</div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-id-card"></i>
+                        <div>
+                            <div class="info-label">Admission Status</div>
+                            <div>
+                                <span class="admission-status cap" id="admissionStatus">CAP</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-item" id="scholarshipInfoContainer">
+                        <i class="fas fa-medal"></i>
+                        <div>
+                            <div class="info-label">Scholarship Status</div>
+                            <div class="info-value" id="scholarshipStatus">Eligible</div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <div>
+                            <div class="info-label">Joined On</div>
+                 
+                        </div>
+                    </div>
+                </div>
+                <div class="scholarship-info scholarship-eligible" id="scholarshipInfoBox">
+                    <i class="fas fa-info-circle"></i>
+                    <span id="scholarshipMessage">You are eligible for scholarship benefits under the CAP admission process.</span>
+                </div>
+            </div>
+
+            <!-- Profile Details -->
+            <div class="profile-card">
+                <div class="profile-tabs">
+                    <div class="profile-tab active" data-tab="personal">Personal Information</div>
+
+                </div>
+
+                <!-- Personal Information Tab -->
+                <div class="tab-content active" id="personal-tab">
+                    <form id="personal-form">
+                        <div class="form-section">
+                            <h3 class="section-title">Basic Information</h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label" for="fullName">Full Name</label>
+                                    <input type="text" id="fullName" class="form-control" value="John Smith">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="studentIdInput">Student ID</label>
+                                    <input type="text" id="studentIdInput" class="form-control" value="EN22121001" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="email">Email Address</label>
+                                    <input type="email" id="email" class="form-control" value="john.smith@example.com">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="dob">Date of Birth</label>
+                                    <input type="date" id="dob" class="form-control" value="2004-05-15">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="gender">Gender</label>
+                                    <select id="gender" class="form-select">
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="other">Other</option>
+                                        <option value="prefer-not-to-say">Prefer not to say</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-section">
+                            <h3 class="section-title">Admission Information</h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label" for="department">Department</label>
+                                    <select id="department" class="form-select">
+                                        <option value="cs">Computer Science</option>
+                                        <option value="ee">Electrical Engineering</option>
+                                        <option value="me">Mechanical Engineering</option>
+                                        <option value="ce">Civil Engineering</option>
+                                        <option value="ce">Electronics Engineering</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="academicYear">Academic Year</label>
+                                    <select id="academicYear" class="form-select">
+                                        <option value="first">First Year</option>
+                                        <option value="second">Second Year</option>
+                                        <option value="third">Third Year</option>
+                                        <option value="fourth">Fourth Year</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="admissionProcessType">Admission Process</label>
+                                    <select id="admissionProcessType" class="form-select">
+                                        <option value="cap">Centralized Admission Process (CAP)</option>
+                                        <option value="non-cap">Non-CAP</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="admissionDate">Admission Date</label>
+                                    <input type="date" id="admissionDate" class="form-control" value="2022-08-15">
+                                </div>
+                                
+                            </div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button type="submit" class="btn btn-primary" onclick="addNotification()">Save Changes</button>
+                            <button type="reset" class="btn btn-outline">Reset</button>
+                        </div>
+                    </form>
+                </div>
+
+
+    
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">Changes saved successfully!</div>
+
+    <script>
+        // Toggle dropdown menu
+        const profileDropdown = document.getElementById('profileDropdown');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        
+        profileDropdown.addEventListener('click', function(e) {
+            dropdownMenu.classList.toggle('show');
+            e.stopPropagation();
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (!profileDropdown.contains(e.target)) {
+                dropdownMenu.classList.remove('show');
+            }
+        });
+        
+        // Tab switching functionality
+        const tabs = document.querySelectorAll('.profile-tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.getAttribute('data-tab');
+                
+                // Remove active class from all tabs and contents
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Add active class to current tab and content
+                tab.classList.add('active');
+                document.getElementById(`${tabName}-tab`).classList.add('active');
+            });
+        });
+        
+        // Form submission
+        const personalForm = document.getElementById('personal-form');
+        const toast = document.getElementById('toast');
+        
+        personalForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Update profile info
+            const fullName = document.getElementById('fullName').value;
+            document.getElementById('studentName').textContent = fullName;
+            
+            const department = document.getElementById('department');
+            const departmentText = department.options[department.selectedIndex].text;
+            document.getElementById('studentDepartment').textContent = departmentText;
+            
+            const email = document.getElementById('email').value;
+            document.getElementById('studentEmail').textContent = email;
+            
+            // Get initials for avatar
+            const nameParts = fullName.split(' ');
+            const initials = nameParts.length > 1 
+                ? (nameParts[0][0] + nameParts[1][0]).toUpperCase() 
+                : nameParts[0].substring(0, 2).toUpperCase();
+            document.getElementById('avatarInitials').textContent = initials;
+            document.getElementById('profileImage').textContent = initials;
+            
+            // Update admission status
+            const admissionProcess = document.getElementById('admissionProcessType');
+            const admissionValue = admissionProcess.value;
+            const admissionStatus = document.getElementById('admissionStatus');
+            
+            if (admissionValue === 'cap') {
+                admissionStatus.textContent = 'CAP';
+                admissionStatus.className = 'admission-status cap';
+                document.getElementById('scholarshipStatus').textContent = 'Eligible';
+                document.getElementById('scholarshipInfoBox').className = 'scholarship-info scholarship-eligible';
+                document.getElementById('scholarshipMessage').textContent = 'You are eligible for scholarship benefits under the CAP admission process.';
+            } else {
+                admissionStatus.textContent = 'Non-CAP';
+                admissionStatus.className = 'admission-status non-cap';
+                document.getElementById('scholarshipStatus').textContent = 'Not Eligible';
+                document.getElementById('scholarshipInfoBox').className = 'scholarship-info';
+                document.getElementById('scholarshipMessage').textContent = 'Scholarship benefits are only available for students admitted through CAP.';
+            }
+            
+            // Show toast notification
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        });
+        
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            // Redirect to login page
+            window.location.href = 'index.html';
+        });
+
+
+         async function addNotification() { 
+            let fullName= document.getElementById('fullName').value.trim();
+            let studentID = document.getElementById('studentIdInput').value.trim();
+            let dateOfBirth = document.getElementById('dob').value.trim();
+            let gender = document.getElementById('gender').value.trim();
+            let department = document.getElementById('department').value.trim();
+            let year = document.getElementById('academicYear').value.trim();
+            let admissionProcess = document.getElementById('admissionProcessType').value.trim();
+        
+            console.log("📤 Sending Data:", { fullName, studentID, dateOfBirth, gender, department, year, admissionProcess });
+        
+            if (!fullName || !studentID || !dateOfBirth || !gender || !department || !year || !admissionProcess) {
+                alert("Please fill out all fields.");
+                return;
+            }
+        
+            try {
+                const response = await fetch("http://localhost:7000/api/auth/student-profile", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ fullName, studentID, dateOfBirth, gender, department, year, admissionProcess }) 
+                });
+        
+                const data = await response.json();
+                console.log("📩 Response Data:", data);
+        
+                if (response.ok) {
+                    alert("Profile updated successfully!");
+                    
+                } else {
+                    alert(data.message || "Profile updated  failed!");
+                }
+            } catch (error) {
+                console.error("❌ Registration Error:", error);
+                alert("Server error. Try again later.");
+            }
+        } 
+
+
+        
+
+
+
+       
+        
+
+
+
+    </script>
+</body>
+</html>

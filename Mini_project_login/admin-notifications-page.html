@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Notifications - Student Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700,900');
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            text-decoration: none;
+        }
+        :root {
+            --primary-gradient: linear-gradient(to right, #2563eb, #9333ea);
+            --secondary-gradient: linear-gradient(to right, #9333ea, #2563eb);
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-blue: #1e40af;
+            --light-gray: #f3f4f6;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        body {
+            background-color: var(--light-gray);
+            min-height: 100vh;
+            padding-top: 80px;
+            padding-bottom: 30px;
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px;
+            background: var(--primary-gradient);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .navbar .logo {
+            font-size: 30px;
+            font-weight: 700;
+            color: white;
+            padding-left: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .navbar ul {
+            display: flex;
+            list-style: none;
+            padding-right: 30px;
+        }
+        .navbar ul li {
+            margin-left: 20px;
+            position: relative;
+        }
+        .navbar ul li a {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 8px;
+            transition: 0.3s;
+            border: 2px solid white;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .navbar ul li a:hover {
+            background: white;
+            color: #2563eb;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .dashboard-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .dashboard-card h2 {
+            margin-bottom: 20px;
+            color: var(--dark-blue);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .admin-badge {
+            background-color: #dc2626;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .filter-button {
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 2px solid #e5e7eb;
+            background: white;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .filter-button:hover, .filter-button.active {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+        }
+        .search-bar {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+            width: 100%;
+            font-size: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .search-bar i {
+            color: #9ca3af;
+        }
+        .search-bar input {
+            border: none;
+            padding: 0;
+            flex: 1;
+            outline: none;
+        }
+        .notification-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .notification-item {
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #2563eb;
+            background-color: #f9fafb;
+            transition: all 0.3s;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            position: relative;
+        }
+        .notification-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .notification-item.unread {
+            background-color: #eff6ff;
+            border-left-color: #3b82f6;
+        }
+        .notification-item.unread .unread-indicator {
+            display: block;
+        }
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: white;
+            font-size: 18px;
+        }
+        .icon-scholarship {
+            background-color: #2563eb;
+        }
+        .icon-news {
+            background-color: #9333ea;
+        }
+        .icon-announcement {
+            background-color: #f59e0b;
+        }
+        .icon-events {
+            background-color: #10b981;
+        }
+        .icon-academics {
+            background-color: #ef4444;
+        }
+        .notification-content {
+            flex: 1;
+        }
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        .notification-title {
+            font-weight: 600;
+            color: #1f2937;
+        }
+        .notification-date {
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .notification-message {
+            color: #4b5563;
+            margin-bottom: 5px;
+        }
+        .notification-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .notification-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .action-button {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+        }
+        .edit-button {
+            background-color: #f59e0b;
+            color: white;
+        }
+        .delete-button {
+            background-color: #ef4444;
+            color: white;
+        }
+        .action-button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        .department-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+        }
+        .badge-cse {
+            background-color: #2563eb;
+        }
+        .badge-ece {
+            background-color: #9333ea;
+        }
+        .badge-eee {
+            background-color: #f59e0b;
+        }
+        .badge-mech {
+            background-color: #10b981;
+        }
+        .badge-civil {
+            background-color: #ef4444;
+        }
+        .unread-indicator {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #3b82f6;
+            display: none;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6b7280;
+        }
+        .empty-state i {
+            font-size: 50px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        .empty-state h3 {
+            margin-bottom: 5px;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        .page-button {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            background-color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .page-button:hover, .page-button.active {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+        }
+        .notification-detail {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .notification-detail-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 30px;
+            position: relative;
+        }
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #6b7280;
+        }
+        .close-button:hover {
+            color: #ef4444;
+        }
+        .detail-header {
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+        .detail-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--dark-blue);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .detail-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .detail-body {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .edit-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .edit-modal-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 600px;
+            padding: 30px;
+            position: relative;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .save-button {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .save-button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        .cancel-button {
+            background: #e5e7eb;
+            color: #4b5563;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 10px;
+        }
+        .cancel-button:hover {
+            background: #d1d5db;
+        }
+        .confirm-delete-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .confirm-delete-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            text-align: center;
+        }
+        .confirm-delete-content i {
+            font-size: 50px;
+            color: #ef4444;
+            margin-bottom: 20px;
+        }
+        .confirm-delete-content h3 {
+            margin-bottom: 15px;
+            color: #1f2937;
+        }
+        .confirm-delete-content p {
+            margin-bottom: 25px;
+            color: #6b7280;
+        }
+        .confirm-button {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .confirm-button:hover {
+            background-color: #dc2626;
+        }
+        .add-notification-button {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .add-notification-button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        .notification-count {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+        @media (max-width: 768px) {
+            .navbar ul li a {
+                font-size: 14px;
+                padding: 8px 12px;
+            }
+            .notification-item {
+                flex-direction: column;
+            }
+            .notification-icon {
+                align-self: flex-start;
+            }
+            .notification-actions {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="#" class="logo">
+            <i class="fas fa-graduation-cap"></i>
+            Admin Notifications Portal
+        </a>
+        <ul>
+            <li>
+                <a href="admin-dashboard.html">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="admin-profile.html">
+                    <i class="fas fa-user-shield"></i> Admin
+                </a>
+            </li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <div class="dashboard-card">
+            <h2>
+                <i class="fas fa-bell"></i> Notifications Management
+                <span class="admin-badge">ADMIN</span>
+            </h2>
+            
+            <button id="addNotificationBtn" class="add-notification-button">
+                <i class="fas fa-plus"></i> Add New Notification
+            </button>
+            
+            <div class="filters">
+                <button class="filter-button active" data-filter="all">
+                    <i class="fas fa-list-ul"></i> All
+                </button>
+                <button class="filter-button" data-filter="scholarship">
+                    <i class="fas fa-award"></i> Scholarships
+                </button>
+                <button class="filter-button" data-filter="news">
+                    <i class="fas fa-newspaper"></i> News
+                </button>
+                <button class="filter-button" data-filter="announcement">
+                    <i class="fas fa-bullhorn"></i> Announcements
+                </button>
+                <button class="filter-button" data-filter="events">
+                    <i class="fas fa-calendar-alt"></i> Events
+                </button>
+                <button class="filter-button" data-filter="academics">
+                    <i class="fas fa-book"></i> Academics
+                </button>
+            </div>
+            
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchNotifications" placeholder="Search notifications...">
+            </div>
+            
+            <div id="notificationsList" class="notification-list">
+                <!-- Notifications will be inserted here by JavaScript -->
+            </div>
+            
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <i class="fas fa-bell-slash"></i>
+                <h3>No notifications</h3>
+                <p>There are no notifications matching your filters.</p>
+            </div>
+            
+            <div class="pagination" id="pagination">
+                <!-- Pagination buttons will be inserted here by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Detail Modal -->
+    <div id="notificationDetail" class="notification-detail">
+        <div class="notification-detail-content">
+            <button id="closeDetail" class="close-button">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="detail-header">
+                <h3 id="detailTitle" class="detail-title"></h3>
+                <div class="detail-meta">
+                    <span id="detailDate"></span>
+                    <span id="detailDepartment"></span>
+                </div>
+            </div>
+            <div id="detailBody" class="detail-body">
+                <!-- Notification content will be displayed here -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit Notification Modal -->
+    <div id="editModal" class="edit-modal">
+        <div class="edit-modal-content">
+            <button id="closeEditModal" class="close-button">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 class="detail-title">Edit Notification</h3>
+            <form id="editNotificationForm">
+                <input type="hidden" id="editNotificationId">
+                
+                <div class="form-group">
+                    <label for="editSection">Section:</label>
+                    <select id="editSection" class="form-control" required>
+                        <option value="scholarship">Scholarship</option>
+                        <option value="news">News</option>
+                        <option value="announcement">Announcement</option>
+                        <option value="events">Events</option>
+                        <option value="academics">Academics</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editMessage">Message:</label>
+                    <textarea id="editMessage" class="form-control" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editDepartment">Department:</label>
+                    <select id="editDepartment" class="form-control" required>
+                        <option value="cse">Computer Science</option>
+                        <option value="ece">Electronics</option>
+                        <option value="eee">Electrical</option>
+                        <option value="mech">Mechanical</option>
+                        <option value="civil">Civil</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <button type="button" id="cancelEdit" class="cancel-button">Cancel</button>
+                    <button type="submit" class="save-button">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Add Notification Modal -->
+    <div id="addModal" class="edit-modal">
+        <div class="edit-modal-content">
+            <button id="closeAddModal" class="close-button">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 class="detail-title">Add New Notification</h3>
+            <form id="addNotificationForm">
+                <div class="form-group">
+                    <label for="addSection">Section:</label>
+                    <select id="addSection" class="form-control" required>
+                        <option value="scholarship">Scholarship</option>
+                        <option value="news">News</option>
+                        <option value="announcement">Announcement</option>
+                        <option value="events">Events</option>
+                        <option value="academics">Academics</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="addMessage">Message:</label>
+                    <textarea id="addMessage" class="form-control" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="addDepartment">Department:</label>
+                    <select id="addDepartment" class="form-control" required>
+                        <option value="cse">Computer Science</option>
+                        <option value="ece">Electronics</option>
+                        <option value="eee">Electrical</option>
+                        <option value="mech">Mechanical</option>
+                        <option value="civil">Civil</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <button type="button" id="cancelAdd" class="cancel-button">Cancel</button>
+                    <button type="submit" class="save-button">Add Notification</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Confirm Delete Modal -->
+    <div id="confirmDeleteModal" class="confirm-delete-modal">
+        <div class="confirm-delete-content">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h3>Delete Notification</h3>
+            <p>Are you sure you want to delete this notification? This action cannot be undone.</p>
+            <input type="hidden" id="deleteNotificationId">
+            <button id="cancelDelete" class="cancel-button">Cancel</button>
+            <button id="confirmDelete" class="confirm-button">Delete</button>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Initialize
+            loadNotifications();
+            
+            // Filter buttons
+            const filterButtons = document.querySelectorAll('.filter-button');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Apply filter
+                    const filter = this.getAttribute('data-filter');
+                    loadNotifications(filter);
+                });
+            });
+            
+            // Search functionality
+            document.getElementById("searchNotifications").addEventListener("input", function() {
+                const searchTerm = this.value.toLowerCase().trim();
+                const activeFilter = document.querySelector('.filter-button.active').getAttribute('data-filter');
+                loadNotifications(activeFilter, searchTerm);
+            });
+            
+            // Close notification detail
+            document.getElementById("closeDetail").addEventListener("click", function() {
+                document.getElementById("notificationDetail").style.display = "none";
+            });
+            
+            // Close modal when clicking outside the content
+            document.getElementById("notificationDetail").addEventListener("click", function(event) {
+                if (event.target === this) {
+                    this.style.display = "none";
+                }
+            });
+            
+            // Add notification button
+            document.getElementById("addNotificationBtn").addEventListener("click", function() {
+                document.getElementById("addModal").style.display = "flex";
+                document.getElementById("addMessage").value = "";
+                document.getElementById("addSection").value = "scholarship";
+                document.getElementById("addDepartment").value = "cse";
+            });
+            
+            // Close add modal
+            document.getElementById("closeAddModal").addEventListener("click", function() {
+                document.getElementById("addModal").style.display = "none";
+            });
+            
+            // Cancel add button
+            document.getElementById("cancelAdd").addEventListener("click", function() {
+                document.getElementById("addModal").style.display = "none";
+            });
+            
+            // Close edit modal
+            document.getElementById("closeEditModal").addEventListener("click", function() {
+                document.getElementById("editModal").style.display = "none";
+            });
+            
+            // Cancel edit button
+            document.getElementById("cancelEdit").addEventListener("click", function() {
+                document.getElementById("editModal").style.display = "none";
+            });
+            
+            // Cancel delete button
+            document.getElementById("cancelDelete").addEventListener("click", function() {
+                document.getElementById("confirmDeleteModal").style.display = "none";
+            });
+            
+            // Add notification form submission
+            document.getElementById("addNotificationForm").addEventListener("submit", function(e) {
+                e.preventDefault();
+                
+                const section = document.getElementById("addSection").value;
+                const message = document.getElementById("addMessage").value;
+                const department = document.getElementById("addDepartment").value;
+                
+                addNotification(section, message, department);
+                document.getElementById("addModal").style.display = "none";
+            });
+            
+            // Edit notification form submission
+            document.getElementById("editNotificationForm").addEventListener("submit", function(e) {
+                e.preventDefault();
+                
+                const id = parseInt(document.getElementById("editNotificationId").value);
+                const section = document.getElementById("editSection").value;
+                const message = document.getElementById("editMessage").value;
+                const department = document.getElementById("editDepartment").value;
+                
+                updateNotification(id, section, message, department);
+                document.getElementById("editModal").style.display = "none";
+            });
+            
+            // Confirm delete button
+            document.getElementById("confirmDelete").addEventListener("click", function() {
+                const id = parseInt(document.getElementById("deleteNotificationId").value);
+                deleteNotification(id);
+                document.getElementById("confirmDeleteModal").style.display = "none";
+            });
+            
+            // Helper Functions
+            function loadNotifications(filter = 'all', searchTerm = '') {
+                const notificationsList = document.getElementById("notificationsList");
+                const emptyState = document.getElementById("emptyState");
+                
+                if (!notificationsList || !emptyState) return;
+                
+                notificationsList.innerHTML = "";
+                
+                let notifications = JSON.parse(localStorage.getItem("notifications")) || [];
+                
+                // If no notifications exist, initialize with sample data
+                if (notifications.length === 0) {
+                    initializeTestNotifications();
+                    notifications = JSON.parse(localStorage.getItem("notifications")) || [];
+                }
+                
+                // Apply filter
+                if (filter !== 'all') {
+                    // Filter by section (scholarship, news, etc.)
+                    notifications = notifications.filter(n => n.section === filter);
+                }
+                
+                // Apply search
+                if (searchTerm) {
+                    notifications = notifications.filter(n => 
+                        n.message?.toLowerCase().includes(searchTerm) || 
+                        n.section?.toLowerCase().includes(searchTerm) ||
+                        n.department?.toLowerCase().includes(searchTerm)
+                    );
+                }
+                
+                // Display notifications or empty state
+                if (notifications.length > 0) {
+                    emptyState.style.display = "none";
+                    
+                    notifications.forEach(notification => {
+                        const notificationItem = document.createElement("div");
+                        notificationItem.className = `notification-item ${notification.read ? '' : 'unread'}`;
+                        notificationItem.dataset.id = notification.id;
+                        
+                        // Format the section name for display
+                        const sectionName = notification.section.charAt(0).toUpperCase() + notification.section.slice(1);
+                        
+                        // Create department badge class
+                        const deptClass = `badge-${notification.department}`;
+                        
+                        const iconClass = `icon-${notification.section}`;
+                        const iconElement = getIconForSection(notification.section);
+                        
+                        notificationItem.innerHTML = `
+                            <div class="unread-indicator"></div>
+                            <div class="notification-icon ${iconClass}">
+                                <i class="fas ${iconElement}"></i>
+                            </div>
+                            <div class="notification-content">
+                                <div class="notification-header">
+                                    <span class="notification-title">${sectionName}</span>
+                                    <span class="notification-date">${formatDate(notification.date)}</span>
+                                </div>
+                                <p class="notification-message">${notification.message}</p>
+                                <div class="notification-footer">
+                                    <div class="department-badge ${deptClass}">${getDepartmentName(notification.department)}</div>
+                                    <div class="notification-actions">
+                                        <button class="action-button edit-button" onclick="openEditModal(${notification.id})">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button class="action-button delete-button" onclick="openDeleteModal(${notification.id})">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        
+                        // View notification details on click
+                        notificationItem.addEventListener("click", function(e) {
+                            // Prevent bubbling if clicking on action buttons
+                            if (e.target.closest('.action-button')) return;
+                            
+                            openNotificationDetail(notification.id);
+                        });
+                        
+                        notificationsList.appendChild(notificationItem);
+                    });
+                } else {
+                    emptyState.style.display = "block";
+                }
+            }
+            
+            function openNotificationDetail(id) {
+                const notifications = JSON.parse(localStorage.getItem("notifications")) || [];
+                const notification = notifications.find(n => n.id === id);
+                
+                if (notification) {
+                    // Update read status
+                    notification.read = true;
+                    localStorage.setItem("notifications", JSON.stringify(notifications));
+                    
+                    // Populate detail modal
+                    document.getElementById("detailTitle").innerHTML = `
+                        <i class="fas ${getIconForSection(notification.section)}"></i>
+                        ${notification.section.charAt(0).toUpperCase() + notification.section.slice(1)}
+                    `;
+                    document.getElementById("detailDate").textContent = formatDate(notification.date);
+                    document.getElementById("detailDepartment").textContent = getDepartmentName(notification.department);
+                    document.getElementById("detailBody").textContent = notification.message;
+                    
+                    // Show detail modal
+                    document.getElementById("notificationDetail").style.display = "flex";
+                    
+                    // Update UI to reflect read status
+                    const notificationItem = document.querySelector(`.notification-item[data-id="${id}"]`);
+                    if (notificationItem) {
+                        notificationItem.classList.remove("unread");
+                    }
+                }
+            }
+            
+            function openEditModal(id) {
+                const notifications = JSON.parse(localStorage.getItem("notifications")) || [];
+                const notification = notifications.find(n => n.id === id);
+                
+                if (notification) {
+                    document.getElementById("editNotificationId").value = notification.id;
+                    document.getElementById("editSection").value = notification.section;
+                    document.getElementById("editMessage").value = notification.message;
+                    document.getElementById("editDepartment").value = notification.department;
+                    
+                    document.getElementById("editModal").style.display = "flex";
+                }
+            }
+            
+            function openDeleteModal(id) {
+                document.getElementById("deleteNotificationId").value = id;
+                document.getElementById("confirmDeleteModal").style.display = "flex";
+            }
+            
+            function updateNotification(id, section, message, department) {
+                const notifications = JSON.parse(localStorage.getItem("notifications")) || [];
+                const index = notifications.findIndex(n => n.id === id);
+                
+                if (index !== -1) {
+                    notifications[index].section = section;
+                    notifications[index].message = message;
+                    notifications[index].department = department;
+                    notifications[index].date = new Date().getTime(); // Update timestamp
+                    
+                    localStorage.setItem("notifications", JSON.stringify(notifications));
+                    
+                    // Reload notifications to reflect changes
+                    const activeFilter = document.querySelector('.filter-button.active').getAttribute('data-filter');
+                    const searchTerm = document.getElementById("searchNotifications").value.toLowerCase().trim();
+                    loadNotifications(activeFilter, searchTerm);
+                }
+            }
+            
+            function addNotification(section, message, department) {
+                const notifications = JSON.parse(localStorage.getItem("notifications")) || [];
+                
+                // Find the highest ID to ensure new ID is unique
+                const maxId = notifications.reduce((max, notification) => Math.max(max, notification.id || 0), 0);
+                
+                const newNotification = {
+                    id: maxId + 1,
+                    section: section,
+                    message: message,
+                    department: department,
+                    date: new Date().getTime(),
+                    read: false
+                };
+                
+                notifications.push(newNotification);
+                localStorage.setItem("notifications", JSON.stringify(notifications));
+                
+                // Reload notifications to reflect changes
+                const activeFilter = document.querySelector('.filter-button.active').getAttribute('data-filter');
+                const searchTerm = document.getElementById("searchNotifications").value.toLowerCase().trim();
+                loadNotifications(activeFilter, searchTerm);
+            }
+            
+            function deleteNotification(id) {
+                let notifications = JSON.parse(localStorage.getItem("notifications")) || [];
+                notifications = notifications.filter(n => n.id !== id);
+                localStorage.setItem("notifications", JSON.stringify(notifications));
+                
+                // Reload notifications to reflect changes
+                const activeFilter = document.querySelector('.filter-button.active').getAttribute('data-filter');
+                const searchTerm = document.getElementById("searchNotifications").value.toLowerCase().trim();
+                loadNotifications(activeFilter, searchTerm);
+            }
+            
+            function initializeTestNotifications() {
+                const testData = [
+                    {
+                        id: 1,
+                        section: "scholarship",
+                        message: "New Merit Scholarship applications are now open. Eligible students can apply through the portal by April 15th. Scholarship covers full tuition for the academic year.",
+                        department: "cse",
+                        date: new Date().getTime() - 1000 * 60 * 60 * 2, // 2 hours ago
+                        read: false
+                    },
+                    {
+                        id: 2,
+                        section: "news",
+                        message: "University ranks in top 50 engineering schools nationwide. This achievement reflects our commitment to academic excellence and innovation.",
+                        department: "ece",
+                        date: new Date().getTime() - 1000 * 60 * 60 * 24, // 1 day ago
+                        read: true
+                    },
+                    {
+                        id: 3,
+                        section: "announcement",
+                        message: "Campus will be closed on May 5th for maintenance. All classes and activities are cancelled. Online resources will remain available.",
+                        department: "eee",
+                        date: new Date().getTime() - 1000 * 60 * 60 * 24 * 2, // 2 days ago
+                        read: false
+                    },
+                    {
+                        id: 4,
+                        section: "events",
+                        message: "Annual Tech Fest begins on March 30th. Register now to participate in competitions, workshops, and seminars. Early registration closes on March 25th.",
+                        department: "cse",
+                        date: new Date().getTime() - 1000 * 60 * 60 * 24 * 3, // 3 days ago
+                        read: true
+                    },
+                    {
+                        id: 5,
+                        section: "academics",
+                        message: "Final exam schedule has been published. Check the academic portal for your personalized timetable. Exams begin on May 15th.",
+                        department: "mech",
+                        date: new Date().getTime() - 1000 * 60 * 60 * 24 * 4, // 4 days ago
+                        read: false
+                    },
+                    {
+                        id: 6,
+                        section: "scholarship",
+                        message: "Research scholarship applications for postgraduate students are due by April 30th. Submit your research proposal and CV to the department head.",
+                        department: "civil",
+                        date: new Date().getTime() - 1000 * 60 * 60 * 24 * 5, // 5 days ago
+                        read: true
+                    }
+                ];
+                
+                localStorage.setItem("notifications", JSON.stringify(testData));
+            }
+            
+            function formatDate(timestamp) {
+                const date = new Date(timestamp);
+                const now = new Date();
+                const diffMs = now - date;
+                const diffSeconds = Math.floor(diffMs / 1000);
+                const diffMinutes = Math.floor(diffSeconds / 60);
+                const diffHours = Math.floor(diffMinutes / 60);
+                const diffDays = Math.floor(diffHours / 24);
+                
+                if (diffSeconds < 60) {
+                    return "Just now";
+                } else if (diffMinutes < 60) {
+                    return `${diffMinutes} ${diffMinutes === 1 ? 'minute' : 'minutes'} ago`;
+                } else if (diffHours < 24) {
+                    return `${diffHours} ${diffHours === 1 ? 'hour' : 'hours'} ago`;
+                } else if (diffDays < 7) {
+                    return `${diffDays} ${diffDays === 1 ? 'day' : 'days'} ago`;
+                } else {
+                    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+                }
+            }
+            
+            function getIconForSection(section) {
+                const icons = {
+                    scholarship: "fa-award",
+                    news: "fa-newspaper",
+                    announcement: "fa-bullhorn",
+                    events: "fa-calendar-alt",
+                    academics: "fa-book"
+                };
+                
+                return icons[section] || "fa-bell";
+            }
+            
+            function getDepartmentName(code) {
+                const departments = {
+                    cse: "Computer Science",
+                    ece: "Electronics",
+                    eee: "Electrical",
+                    mech: "Mechanical",
+                    civil: "Civil"
+                };
+                
+                return departments[code] || code;
+            }
+        });
+    </script>
+</body>
+</html>

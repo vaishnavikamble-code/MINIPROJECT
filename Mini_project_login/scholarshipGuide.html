@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scholarship Guide</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,700,900');
+        
+        :root {
+            --primary-gradient: linear-gradient(135deg, #6a11cb, #2575fc);
+            --card-bg: rgba(255, 255, 255, 0.15);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.85);
+            --accent: rgba(255, 255, 255, 0.25);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            --animation-duration: 0.6s;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes shimmer {
+            0% {
+                background-position: -100% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+        
+        body {
+            background: var(--primary-gradient);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            color: var(--text-primary);
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 40px 20px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInUp var(--animation-duration) ease-out;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #ffffff, #e0e0ff, #ffffff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            animation: shimmer 4s linear infinite;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            font-weight: 300;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out 0.3s forwards;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp var(--animation-duration) ease-out forwards;
+        }
+        
+        .card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .card:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        .card:nth-child(4) {
+            animation-delay: 0.6s;
+        }
+        
+        .card-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+        
+        .card-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ffffff, transparent);
+            border-radius: 2px;
+            animation: expandWidth 1s ease-out 0.8s forwards;
+        }
+        
+        @keyframes expandWidth {
+            from {
+                width: 0;
+            }
+            to {
+                width: 60px;
+            }
+        }
+        
+        ul.steps {
+            padding-left: 20px;
+            list-style-type: none;
+        }
+        
+        ul.steps li {
+            position: relative;
+            padding: 15px 0 15px 35px;
+            border-left: 2px solid var(--accent);
+            margin-left: 10px;
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: slideInFromLeft 0.5s ease-out forwards;
+        }
+        
+        @keyframes slideInFromLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        ul.steps li:nth-child(1) { animation-delay: 0.8s; }
+        ul.steps li:nth-child(2) { animation-delay: 1.0s; }
+        ul.steps li:nth-child(3) { animation-delay: 1.2s; }
+        ul.steps li:nth-child(4) { animation-delay: 1.4s; }
+        ul.steps li:nth-child(5) { animation-delay: 1.6s; }
+        ul.steps li:nth-child(6) { animation-delay: 1.8s; }
+        ul.steps li:nth-child(7) { animation-delay: 2.0s; }
+        ul.steps li:nth-child(8) { animation-delay: 2.2s; }
+        
+        ul.steps li:last-child {
+            border-left: 2px solid transparent;
+        }
+        
+        ul.steps li::before {
+            content: '';
+            position: absolute;
+            left: -11px;
+            top: 15px;
+            width: 20px;
+            height: 20px;
+            background: var(--primary-gradient);
+            background-size: 200% 200%;
+            border-radius: 50%;
+            border: 2px solid white;
+            animation: pulse 3s infinite;
+        }
+        
+        ul.steps li:hover::before {
+            animation: pulse 1s infinite;
+        }
+        
+        ul.steps li b {
+            display: block;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            font-weight: 500;
+            transition: transform 0.3s ease;
+        }
+        
+        ul.steps li:hover b {
+            transform: translateX(5px);
+            color: #ffffff;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            animation: fadeInUp var(--animation-duration) ease-out 0.6s forwards;
+        }
+        
+        table th {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            text-align: left;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+        
+        table td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: 300;
+            transition: background-color 0.3s ease;
+        }
+        
+        table tr {
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        
+        table tr:hover {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+            transform: translateX(5px);
+        }
+        
+        table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        table tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .document-name {
+            font-weight: 500;
+            position: relative;
+        }
+        
+        .document-name::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background-color: white;
+            transition: width 0.3s ease;
+        }
+        
+        tr:hover .document-name::after {
+            width: 100%;
+        }
+        
+        .btn-more-details {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .btn-more-details:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-container {
+            text-align: center;
+            margin-top: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            opacity: 0;
+            animation: fadeInUp var(--animation-duration) ease-out 1s forwards;
+        }
+        
+        /* Floating decoration elements */
+        .decoration {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .decoration-1 {
+            width: 100px;
+            height: 100px;
+            top: 10%;
+            left: 10%;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .decoration-2 {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            right: 10%;
+            animation: float 12s ease-in-out infinite;
+        }
+        
+        .decoration-3 {
+            width: 70px;
+            height: 70px;
+            bottom: 10%;
+            left: 20%;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            table th, table td {
+                padding: 12px 10px;
+            }
+            
+            .decoration {
+                opacity: 0.3;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Decorative elements -->
+    <div class="decoration decoration-1"></div>
+    <div class="decoration decoration-2"></div>
+    <div class="decoration decoration-3"></div>
+
+    <div class="container">
+        <header>
+            <h1>Scholarship Guide</h1>
+            <p class="subtitle">Your complete resource for successfully applying to and securing academic scholarships</p>
+        </header>
+        
+        <div class="card">
+            <h2 class="card-title">Steps to Get a Scholarship</h2>
+            <ul class="steps">
+                <li><b>Research Available Scholarships</b> Check official university portals, government websites, and private foundations for opportunities that match your profile.</li>
+                <li><b>Check Eligibility</b> Carefully review academic requirements, financial criteria, and other qualifying factors before applying.</li>
+                <li><b>Gather Required Documents</b> Prepare all necessary certificates and paperwork listed in the documentation section below.</li>
+                <li><b>Fill Out Application Form</b> Complete all required fields accurately and thoroughly, paying attention to deadlines.</li>
+                <li><b>Upload/Submit Documents</b> Attach all required supporting materials according to the specified format and guidelines.</li>
+                <li><b>Track Application Status</b> Monitor your application through the provided portal or contact information to stay updated.</li>
+                <li><b>Attend Interviews</b> Prepare for and participate in any required interviews or additional assessments.</li>
+                <li><b>Receive Scholarship Amount</b> If selected, funds will be disbursed according to the scholarship program's schedule.</li>
+            </ul>
+        </div>
+        
+        <div class="card">
+            <h2 class="card-title">Required Documents</h2>
+            <table>
+                <tr>
+                    <th>Document Name</th>
+                    <th>Purpose</th>
+                </tr>
+                <tr>
+                    <td class="document-name">Aadhaar Card</td>
+                    <td>Identity Verification</td>
+                </tr>
+                <tr>
+                    <td class="document-name">Marksheet (10th, 12th, UG)</td>
+                    <td>Academic Performance Verification</td>
+                </tr>
+                <tr>
+                    <td class="document-name">Income Certificate</td>
+                    <td>Proof of Financial Need</td>
+                </tr>
+                <tr>
+                    <td class="document-name">Caste Certificate</td>
+                    <td>Reservation Benefits (if applicable)</td>
+                </tr>
+                <tr>
+                    <td class="document-name">Domicile Certificate</td>
+                    <td>State-based Scholarship Eligibility</td>
+                </tr>
+                <tr>
+                    <td class="document-name">Bank Passbook Copy</td>
+                    <td>Fund Transfer Details</td>
+                </tr>
+                <tr>
+                    <td class="document-name">Passport-size Photograph</td>
+                    <td>Identification & Application Form</td>
+                </tr>
+                <tr>
+                    <td class="document-name">Admission Proof</td>
+                    <td>Enrollment Verification</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="card">
+            <h2 class="card-title">Maharashtra Scholarship Portal</h2>
+            <p>For students in Maharashtra, the MahaDBT portal offers various scholarship schemes for different educational levels and categories. Visit the official portal to explore available scholarships, check eligibility, and submit your applications.</p>
+            <div class="btn-container">
+                <a href="https://mahadbt.maharashtra.gov.in/Login/Login" class="btn-more-details">For More Details</a>
+            </div>
+        </div>
+        
+        <footer>
+            &copy; 2025 Scholarship Guide | All Rights Reserved
+        </footer>
+    </div>
+</body>
+</html>

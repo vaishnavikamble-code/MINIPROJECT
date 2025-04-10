@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Portal - Year & Department Selection</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif; 
+            background: linear-gradient(135deg, #007BFF, #17a2b8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+        
+        .container {
+            display: flex;
+            width: 85%;
+            height: 85vh;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+        
+        .sidebar {
+            width: 30%;
+            background: #0056b3;
+            color: white;
+            padding: 20px 15px;
+            overflow-y: auto;
+        }
+        
+        .content {
+            width: 70%;
+            padding: 30px;
+            background: #f8f9fa;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-title {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 1.4rem;
+        }
+        
+        .year {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            background: linear-gradient(to right, #17a2b8, #007BFF);
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .year:hover {
+            background: linear-gradient(to right, #138496, #0056b3);
+            transform: translateY(-2px);
+        }
+        
+        .year-indicator {
+            transition: transform 0.3s ease;
+        }
+        
+        .year.active .year-indicator {
+            transform: rotate(180deg);
+        }
+        
+        .departments {
+            display: none;
+            margin: 0 5px 15px 5px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .departments.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: #17a2b8;
+            box-shadow: 0 0 0 2px rgba(23, 162, 184, 0.25);
+        }
+        
+        .content-header {
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .content-header h2 {
+            font-size: 1.8rem;
+            color: #0056b3;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .content-header h2:after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 3px;
+            background: linear-gradient(to right, #17a2b8, #007BFF);
+            bottom: -10px;
+            left: 25%;
+            border-radius: 2px;
+        }
+        
+        .pdf-links {
+            display: grid;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .pdf-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .pdf-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .pdf-title {
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .pdf-icon {
+            color: #dc3545;
+        }
+        
+        .pdf-link {
+            background: linear-gradient(to right, #dc3545, #ff6b81);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(220, 53, 69, 0.3);
+        }
+        
+        .pdf-link:hover {
+            background: linear-gradient(to right, #c82333, #e84c5c);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(220, 53, 69, 0.4);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .empty-state-icon {
+            font-size: 3rem;
+            color: #b0b0b0;
+            margin-bottom: 20px;
+        }
+        
+        .empty-state-text {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+        
+        @media (max-width: 992px) {
+            .container {
+                width: 95%;
+                height: 90vh;
+                flex-direction: column;
+            }
+            
+            .sidebar, .content {
+                width: 100%;
+                height: auto;
+            }
+            
+            .sidebar {
+                max-height: 40%;
+                overflow-y: auto;
+            }
+            
+            .content {
+                max-height: 60%;
+                overflow-y: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-title">Academic Resources</div>
+            
+            <div class="year" onclick="toggleDropdown('second-year', this)">
+                <span>Second Year</span>
+                <span class="year-indicator">&#x2B07;</span>
+            </div>
+            <div id="second-year" class="departments">
+                <select onchange="showContent('Second Year', this.value)">
+                    <option value="">Select Department</option>
+                    <option value="CSE">Computer Science</option>
+                    <option value="EE">Electrical Engineering</option>
+                    <option value="ECE">Electronics & Communication</option>
+                    <option value="MECH">Mechanical Engineering</option>
+                    <option value="CIVIL">Civil Engineering</option>
+                </select>
+            </div>
+            
+            <div class="year" onclick="toggleDropdown('third-year', this)">
+                <span>Third Year</span>
+                <span class="year-indicator">&#x2B07;</span>
+            </div>
+            <div id="third-year" class="departments">
+                <select onchange="showContent('Third Year', this.value)">
+                    <option value="">Select Department</option>
+                    <option value="CSE">Computer Science</option>
+                    <option value="EE">Electrical Engineering</option>
+                    <option value="ECE">Electronics & Communication</option>
+                    <option value="MECH">Mechanical Engineering</option>
+                    <option value="CIVIL">Civil Engineering</option>
+                </select>
+            </div>
+            
+            <div class="year" onclick="toggleDropdown('final-year', this)">
+                <span>Final Year</span>
+                <span class="year-indicator">&#x2B07;</span>
+            </div>
+            <div id="final-year" class="departments">
+                <select onchange="showContent('Final Year', this.value)">
+                    <option value="">Select Department</option>
+                    <option value="CSE">Computer Science</option>
+                    <option value="EE">Electrical Engineering</option>
+                    <option value="ECE">Electronics & Communication</option>
+                    <option value="MECH">Mechanical Engineering</option>
+                    <option value="CIVIL">Civil Engineering</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="content" id="content">
+            <div class="empty-state">
+                <div class="empty-state-icon">📚</div>
+                <h2 class="empty-state-text">Select a year and department to view resources</h2>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const pdfLinks = {
+            "Second Year": {
+                "CSE": { syllabus: "#", result: "#", attendance: "#" },
+                "EE": { syllabus: "#", result: "#", attendance: "#" },
+                "ECE": { syllabus: "#", result: "#", attendance: "#" },
+                "MECH": { syllabus: "#", result: "#", attendance: "#" },
+                "CIVIL": { syllabus: "#", result: "#", attendance: "#" }
+            },
+            "Third Year": {
+                "CSE": { syllabus: "#", result: "#", attendance: "#" },
+                "EE": { syllabus: "#", result: "#", attendance: "#" },
+                "ECE": { syllabus: "#", result: "#", attendance: "#" },
+                "MECH": { syllabus: "#", result: "#", attendance: "#" },
+                "CIVIL": { syllabus: "#", result: "#", attendance: "#" }
+            },
+            "Final Year": {
+                "CSE": { syllabus: "#", result: "#", attendance: "#" },
+                "EE": { syllabus: "#", result: "#", attendance: "#" },
+                "ECE": { syllabus: "#", result: "#", attendance: "#" },
+                "MECH": { syllabus: "#", result: "#", attendance: "#" },
+                "CIVIL": { syllabus: "#", result: "#", attendance: "#" }
+            }
+        };
+
+        function toggleDropdown(id, element) {
+            let departments = document.getElementById(id);
+            let allDepartments = document.querySelectorAll('.departments');
+            let allYears = document.querySelectorAll('.year');
+            
+            // Close all other dropdowns
+            allDepartments.forEach(dept => {
+                if (dept.id !== id) {
+                    dept.classList.remove('active');
+                    dept.style.display = 'none';
+                }
+            });
+            
+            // Remove active class from all years
+            allYears.forEach(year => {
+                year.classList.remove('active');
+            });
+            
+            // Toggle current dropdown
+            if (departments.style.display === 'block') {
+                departments.style.display = 'none';
+                departments.classList.remove('active');
+                element.classList.remove('active');
+            } else {
+                departments.style.display = 'block';
+                departments.classList.add('active');
+                element.classList.add('active');
+            }
+        }
+
+        function showContent(year, department) {
+            if (!department) return;
+            
+            let data = pdfLinks[year][department];
+            
+            document.getElementById("content").innerHTML = `
+                <div class="content-header">
+                    <h2>${year} - ${department}</h2>
+                </div>
+                <div class="pdf-links">
+                    <div class="pdf-item">
+                        <div class="pdf-title">
+                            <span class="pdf-icon">📄</span>
+                            Syllabus
+                        </div>
+                        <a href="${data.syllabus}" class="pdf-link" target="_blank">Download</a>
+                    </div>
+                    <div class="pdf-item">
+                        <div class="pdf-title">
+                            <span class="pdf-icon">📊</span>
+                            Result
+                        </div>
+                        <a href="${data.result}" class="pdf-link" target="_blank">Download</a>
+                    </div>
+                    <div class="pdf-item">
+                        <div class="pdf-title">
+                            <span class="pdf-icon">📋</span>
+                            Attendance
+                        </div>
+                        <a href="${data.attendance}" class="pdf-link" target="_blank">Download</a>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
