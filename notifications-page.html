@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - Student Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700,900');
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            text-decoration: none;
+        }
+        :root {
+            --primary-gradient: linear-gradient(to right, #2563eb, #9333ea);
+            --secondary-gradient: linear-gradient(to right, #9333ea, #2563eb);
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-blue: #1e40af;
+            --light-gray: #f3f4f6;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        body {
+            background-color: var(--light-gray);
+            min-height: 100vh;
+            padding-top: 80px;
+            padding-bottom: 30px;
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px;
+            background: var(--primary-gradient);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .navbar .logo {
+            font-size: 30px;
+            font-weight: 700;
+            color: white;
+            padding-left: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .navbar ul {
+            display: flex;
+            list-style: none;
+            padding-right: 30px;
+        }
+        .navbar ul li {
+            margin-left: 20px;
+            position: relative;
+        }
+        .navbar ul li a {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 8px;
+            transition: 0.3s;
+            border: 2px solid white;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .navbar ul li a:hover {
+            background: white;
+            color: #2563eb;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .dashboard-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .dashboard-card h2 {
+            margin-bottom: 20px;
+            color: var(--dark-blue);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .filter-button {
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 2px solid #e5e7eb;
+            background: white;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .filter-button:hover, .filter-button.active {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+        }
+        .search-bar {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+            width: 100%;
+            font-size: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .search-bar i {
+            color: #9ca3af;
+        }
+        .search-bar input {
+            border: none;
+            padding: 0;
+            flex: 1;
+            outline: none;
+        }
+        .notification-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .notification-item {
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #2563eb;
+            background-color: #f9fafb;
+            transition: all 0.3s;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            position: relative;
+            cursor: pointer;
+        }
+        .notification-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .notification-item.unread {
+            background-color: #eff6ff;
+            border-left-color: #3b82f6;
+        }
+        .notification-item.unread .unread-indicator {
+            display: block;
+        }
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: white;
+            font-size: 18px;
+        }
+        .icon-scholarship {
+            background-color: #2563eb;
+        }
+        .icon-news {
+            background-color: #9333ea;
+        }
+        .icon-announcement {
+            background-color: #f59e0b;
+        }
+        .icon-events {
+            background-color: #10b981;
+        }
+        .icon-academics {
+            background-color: #ef4444;
+        }
+        .notification-content {
+            flex: 1;
+        }
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        .notification-title {
+            font-weight: 600;
+            color: #1f2937;
+        }
+        .notification-date {
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .notification-message {
+            color: #4b5563;
+            margin-bottom: 5px;
+        }
+        .notification-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .department-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+        }
+        .badge-cse {
+            background-color: #2563eb;
+        }
+        .badge-ece {
+            background-color: #9333ea;
+        }
+        .badge-eee {
+            background-color: #f59e0b;
+        }
+        .badge-mech {
+            background-color: #10b981;
+        }
+        .badge-civil {
+            background-color: #ef4444;
+        }
+        .unread-indicator {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #3b82f6;
+            display: none;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6b7280;
+        }
+        .empty-state i {
+            font-size: 50px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        .empty-state h3 {
+            margin-bottom: 5px;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        .page-button {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            background-color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .page-button:hover, .page-button.active {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+        }
+        .notification-detail {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .notification-detail-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 30px;
+            position: relative;
+        }
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #6b7280;
+        }
+        .close-button:hover {
+            color: #ef4444;
+        }
+        .detail-header {
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+        .detail-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--dark-blue);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .detail-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .detail-body {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        @media (max-width: 768px) {
+            .navbar ul li a {
+                font-size: 14px;
+                padding: 8px 12px;
+            }
+            .notification-item {
+                flex-direction: column;
+            }
+            .notification-icon {
+                align-self: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="#" class="logo">
+            <i class="fas fa-graduation-cap"></i>
+            Student Notifications Portal
+        </a>
+        <ul>
+            <li>
+                <a href="HomePageStudent.html">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </li>
+            <li>
+                <a href="student-profile-complete.html">
+                    <i class="fas fa-user"></i> Profile
+                </a>
+            </li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <div class="dashboard-card">
+            <h2><i class="fas fa-bell"></i> Notifications</h2>
+            
+            <div class="filters">
+                <button class="filter-button active" data-filter="all">
+                    <i class="fas fa-list-ul"></i> All
+                </button>
+                <button class="filter-button" data-filter="scholarship">
+                    <i class="fas fa-award"></i> Scholarships
+                </button>
+                <button class="filter-button" data-filter="news">
+                    <i class="fas fa-newspaper"></i> News
+                </button>
+                <button class="filter-button" data-filter="announcement">
+                    <i class="fas fa-bullhorn"></i> Announcements
+                </button>
+                <button class="filter-button" data-filter="events">
+                    <i class="fas fa-calendar-alt"></i> Events
+                </button>
+                <button class="filter-button" data-filter="academics">
+                    <i class="fas fa-book"></i> Academics
+                </button>
+            </div>
+            
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchNotifications" placeholder="Search notifications...">
+            </div>
+            
+            <div id="notificationsList" class="notification-list">
+                <!-- Notifications will be inserted here by JavaScript -->
+            </div>
+            
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <i class="fas fa-bell-slash"></i>
+                <h3>No notifications</h3>
+                <p>You're all caught up!</p>
+            </div>
+            
+            <div class="pagination" id="pagination">
+                <!-- Pagination buttons will be inserted here by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Detail Modal -->
+    <div id="notificationDetail" class="notification-detail">
+        <div class="notification-detail-content">
+            <button id="closeDetail" class="close-button">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="detail-header">
+                <h3 id="detailTitle" class="detail-title"></h3>
+                <div class="detail-meta">
+                    <span id="detailDate"></span>
+                    <span id="detailDepartment"></span>
+                </div>
+            </div>
+            <div id="detailBody" class="detail-body">
+                <!-- Notification content will be displayed here -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Initialize
+            loadNotifications();
+            
+            // Filter buttons
+            const filterButtons = document.querySelectorAll('.filter-button');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Apply filter
+                    const filter = this.getAttribute('data-filter');
+                    loadNotifications(filter);
+                });
+            });
+            
+            // Search functionality
+            document.getElementById("searchNotifications").addEventListener("input", function() {
+                const searchTerm = this.value.toLowerCase().trim();
+                const activeFilter = document.querySelector('.filter-button.active').getAttribute('data-filter');
+                loadNotifications(activeFilter, searchTerm);
+            });
+            
+            // Close notification detail
+            document.getElementById("closeDetail").addEventListener("click", function() {
+                document.getElementById("notificationDetail").style.display = "none";
+            });
+            
+            // Close modal when clicking outside the content
+            document.getElementById("notificationDetail").addEventListener("click", function(event) {
+                if (event.target === this) {
+                    this.style.display = "none";
+                }
+            });
+            
+            // Helper Functions
+            function loadNotifications(filter = 'all', searchTerm = '') {
+                const notificationsList = document.getElementById("notificationsList");
+                const emptyState = document.getElementById("emptyState");
+                
+                if (!notificationsList || !emptyState) return;
+                
+                notificationsList.innerHTML = "";
+                
+                let notifications = JSON.parse(localStorage.getItem("notifications")) || [];
+                
+                // Apply filter
+                if (filter !== 'all') {
+                    // Filter by section (scholarship, news, etc.)
+                    notifications = notifications.filter(n => n.section === filter);
+                }
+                
+                // Apply search
+                if (searchTerm) {
+                    notifications = notifications.filter(n => 
+                        n.message?.toLowerCase().includes(searchTerm) || 
+                        n.section?.toLowerCase().includes(searchTerm) ||
+                        n.department?.toLowerCase().includes(searchTerm)
+                    );
+                }
+                
+                // Display notifications or empty state
+                if (notifications.length > 0) {
+                    emptyState.style.display = "none";
+                    
+                    notifications.forEach(notification => {
+                        const notificationItem = document.createElement("div");
+                        notificationItem.className = `notification-item ${notification.read ? '' : 'unread'}`;
+                        notificationItem.dataset.id = notification.id;
+                        
+                        // Format the section name for display
+                        const sectionName = notification.section.charAt(0).toUpperCase() + notification.section.slice(1);
+                        
+                        // Create department badge class
+                        const deptClass = `badge-${notification.department}`;
+                        
+                        const iconClass = `icon-${notification.section}`;
+                        const iconElement = getIconForSection(notification.section);
+                        
+                        notificationItem.innerHTML = `
+                            <div class="unread-indicator"></div>
+                            <div class="notification-icon ${iconClass}">
+                                <i class="fas ${iconElement}"></i>
+                            </div>
+                            <div class="notification-content">
+                                <div class="notification-header">
+                                    <span class="notification-title">${sectionName}</span>
+                                    <span class="notification-date">${formatDate(notification.date)}</span>
+                                </div>
+                                <p class="notification-message">${notification.message}</p>
+                                <div class="notification-footer">
+                                    <span class="department-badge ${deptClass}">${getDepartmentName(notification.department)}</span>
+                                </div>
+                            </div>
+                        `;
+                        
+                        // Add click event to open notification detail
+                        notificationItem.addEventListener('click', function() {
+                            showNotificationDetail(notification);
+                            
+                            // Automatically mark as read in localStorage when opened
+                            markAsReadInStorage(notification.id);
+                        });
+                        
+                        notificationsList.appendChild(notificationItem);
+                    });
+                } else {
+                    emptyState.style.display = "block";
+                }
+            }
+            
+            function showNotificationDetail(notification) {
+                // Set notification detail content
+                document.getElementById("detailTitle").innerHTML = `
+                    <i class="fas ${getIconForSection(notification.section)}"></i>
+                    ${notification.section.charAt(0).toUpperCase() + notification.section.slice(1)}
+                `;
+                document.getElementById("detailDate").textContent = formatDate(notification.date);
+                document.getElementById("detailDepartment").textContent = getDepartmentName(notification.department);
+                
+                // Create detailed content based on notification type
+                let detailContent = '';
+                
+                switch(notification.section) {
+                    case 'scholarship':
+                        detailContent = `
+                            <h4>Scholarship Details</h4>
+                            <p>${notification.message}</p>
+                            <h4>Eligibility</h4>
+                            <p>Students with CGPA above 8.5 are eligible to apply.</p>
+                            <h4>Important Dates</h4>
+                            <p>Application Deadline: ${getRandomFutureDate()}</p>
+                            <p>Results Announcement: ${getRandomFutureDate(30)}</p>
+                            <h4>How to Apply</h4>
+                            <p>Please visit the scholarship portal and complete the application form.</p>
+                        `;
+                        break;
+                    case 'news':
+                        detailContent = `
+                            <h4>News</h4>
+                            <p>${notification.message}</p>
+                            <p>Read more about this news item on the campus website.</p>
+                        `;
+                        break;
+                    case 'announcement':
+                        detailContent = `
+                            <h4>Announcement</h4>
+                            <p>${notification.message}</p>
+                            <h4>Additional Information</h4>
+                            <p>This announcement applies to all students in the ${getDepartmentName(notification.department)} department.</p>
+                        `;
+                        break;
+                    case 'events':
+                        detailContent = `
+                            <h4>Event Details</h4>
+                            <p>${notification.message}</p>
+                            <h4>Event Date</h4>
+                            <p>${getRandomFutureDate()}</p>
+                            <h4>Venue</h4>
+                            <p>Main Auditorium</p>
+                            <h4>Registration</h4>
+                            <p>Please register through the student portal by ${getRandomFutureDate(5)}</p>
+                        `;
+                        break;
+                    case 'academics':
+                        detailContent = `
+                            <h4>Academic Notice</h4>
+                            <p>${notification.message}</p>
+                            <h4>Important Dates</h4>
+                            <p>Last date for submission: ${getRandomFutureDate(10)}</p>
+                            <h4>Additional Information</h4>
+                            <p>For any queries, please contact your department coordinator.</p>
+                        `;
+                        break;
+                    default:
+                        detailContent = `<p>${notification.message}</p>`;
+                }
+                
+                document.getElementById("detailBody").innerHTML = detailContent;
+                
+                // Show notification detail
+                document.getElementById("notificationDetail").style.display = "flex";
+            }
+            
+            function markAsReadInStorage(notificationId) {
+                const notifications = JSON.parse(localStorage.getItem("notifications")) || [];
+                
+                const notification = notifications.find(n => n.id === parseInt(notificationId));
+                if (notification) {
+                    notification.read = true;
+                    localStorage.setItem("notifications", JSON.stringify(notifications));
+                    
+                    // Update UI to reflect the read status
+                    const notificationItem = document.querySelector(`.notification-item[data-id="${notificationId}"]`);
+                    if (notificationItem) {
+                        notificationItem.classList.remove('unread');
+                    }
+                }
+            }
+            
+            function formatDate(dateString) {
+                if (!dateString) return "N/A";
+                
+                const date = new Date(dateString);
+                return date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+            }
+            
+            function getDepartmentName(code) {
+                const departments = {
+                    "cse": "Computer Science",
+                    "ece": "Electronics",
+                    "eee": "Electrical",
+                    "mech": "Mechanical",
+                    "civil": "Civil"
+                };
+                
+                return departments[code] || code;
+            }
+            
+            function getIconForSection(section) {
+                const icons = {
+                    "scholarship": "fa-award",
+                    "news": "fa-newspaper",
+                    "announcement": "fa-bullhorn",
+                    "events": "fa-calendar-alt",
+                    "academics": "fa-book"
+                };
+                
+                return icons[section] || "fa-bell";
+            }
+            
+            function getRandomFutureDate(daysOffset = 15) {
+                const today = new Date();
+                const futureDate = new Date(today.setDate(today.getDate() + daysOffset));
+                
+                return futureDate.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+            }
+            
+            // If you need to initialize notifications for testing, uncomment and modify this
+            /*
+            function initializeTestNotifications() {
+                if (!localStorage.getItem("notifications")) {
+                    const testNotifications = [
+                        {
+                            id: 1,
+                            section: "scholarship",
+                            message: "New merit scholarship available for engineering students",
+                            department: "cse",
+                            date: new Date().toISOString(),
+                            read: false
+                        },
+                        {
+                            id: 2,
+                            section: "news",
+                            message: "Campus ranked in top 10 engineering colleges nationwide",
+                            department: "cse",
+                            date: new Date().toISOString(),
+                            read: false
+                        },
+                        {
+                            id: 3,
+                            section: "announcement",
+                            message: "Mid-semester exams scheduled from next week",
+                            department: "ece",
+                            date: new Date().toISOString(),
+                            read: true
+                        }
+                    ];
+                    localStorage.setItem("notifications", JSON.stringify(testNotifications));
+                }
+            }
+            
+            initializeTestNotifications();
+            */
+        });
+    </script>
+</body>
+</html>
